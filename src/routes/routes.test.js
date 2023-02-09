@@ -2,7 +2,7 @@ const request = require("supertest");
 const { Router } = require("express");
 const modelSchema = require("../model/model");
 const brandSchema = require("../model/brand");
-const app = require("../index");
+const app = require("../app");
 require("dotenv").config();
 
 jest.mock("../model/model", () => ({
