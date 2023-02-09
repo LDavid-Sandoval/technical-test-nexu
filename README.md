@@ -35,4 +35,13 @@ Para ejecutar el proyecto ejecuté lo siguiente
   npm start
 ```
 
-El proyecto funciona con una simulación de datos, por lo que no es necesaria una configuración extra.
+Las rutas son las siguientes
+
+```bash
+  GET    /brands
+  GET    /brands/:id/models
+  POST   /brands
+  POST   /brands/:id/models
+  PUT    /models/:id
+  GET    /models
+```
