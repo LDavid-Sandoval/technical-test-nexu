@@ -1,0 +1,27 @@
+{
+  "name": "technical-test-nexu",
+  "version": "1.0.0",
+  "description": "This repository is from the technical test of FullStack Developer on Nexu",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LDavid-Sandoval/technical-test-nexu.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LDavid-Sandoval/technical-test-nexu/issues"
+  },
+  "homepage": "https://github.com/LDavid-Sandoval/technical-test-nexu#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
