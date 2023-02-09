@@ -30,9 +30,11 @@ mongoose
   .then(() => {
     console.log("Connect to Mongo DB Atlas");
   })
-  .catch((err) => console.error("err", err));
+  .catch((err) => next(err));
 
 //STARTING SERVER
 app.listen(app.get("port"), () => {
   console.log(`Server on port ${app.get("port")}! `);
 });
+
+module.exports = app;
