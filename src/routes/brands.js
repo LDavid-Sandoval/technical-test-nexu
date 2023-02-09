@@ -15,9 +15,9 @@ const {
 router.get("/", (req, res) => {
   const data = groupByBrand(fakeData);
   if (data.length > 0) {
-    res.json(data);
+    return res.json(data);
   }
-  res.status(400).json({
+  return res.status(400).json({
     response: "No brand information",
   });
 });
@@ -27,9 +27,9 @@ router.get("/:id/models", (req, res) => {
   const brandName = findBrandName(parseInt(id));
   if (brandName) {
     const data = filterModelsForBrand(brandName);
-    res.json(data);
+    return res.json(data);
   } else {
-    res.status(500).json({
+    return res.status(500).json({
       response: "This brand ID not exists",
     });
   }
@@ -46,11 +46,11 @@ router.post("/", (req, res) => {
         brand_name: body.name,
       };
       fakeData.push(newModel);
-      res.json({
+      return res.json({
         response: "The brand has been added",
       });
     }
-    res.status(500).json({
+    return res.status(500).json({
       response: "This brand already exists",
     });
   }
@@ -62,7 +62,7 @@ router.post("/:id/models", (req, res) => {
   if (brandName) {
     const body = req.body;
     if (body.average_price && body.average_price < 100000) {
-      res.status(500).json({
+      return res.status(500).json({
         response: "The average price must be greater than 100,000",
       });
     }
@@ -79,20 +79,20 @@ router.post("/:id/models", (req, res) => {
           brand_name: brandName,
         };
         fakeDataBrand.push(newModel);
-        res.json({
+        return res.json({
           response: "The model has been added",
         });
       }
-      res.status(500).json({
+      return res.status(500).json({
         response: "The name already exists",
       });
     } else {
-      res.status(500).json({
+      return res.status(500).json({
         response: "The name is required",
       });
     }
   } else {
-    res.status(500).json({
+    return res.status(500).json({
       response: "This brand ID not exists",
     });
   }
