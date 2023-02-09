@@ -1,15 +1,15 @@
-# Prueba técnica Invested
+# Prueba técnica Nexu
 
 Esta preuba es realizada por David Sandoval, con el usuario de github https://github.com/LDavid-Sandoval
 
 ## Instalación
 
-Se requiere clonar el repositorio del siguiente enlace:
+Se requiere clonar el repositorio del siguiente enlace: https://github.com/LDavid-Sandoval/technical-test-nexu.git
 
 O por medio de SSH
 
 ```bash
-  git clone git@github.com:LDavid-Sandoval/invested-technical-test.git
+  git clone git@github.com:LDavid-Sandoval/technical-test-nexu.git
 ```
 
 Abrir la carpeta de archivos dentro de Visual Studio Code, para poder instalar dependencias requeridas.
