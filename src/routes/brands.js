@@ -1,19 +1,16 @@
 const { Router } = require("express");
 const router = Router();
-const fakeData = require("../data/models.json");
-const fakeDataBrand = require("../data/brands.json");
-const {
-  groupByBrand,
-  findBrandName,
-  filterModelsForBrand,
-  findBrandExist,
-  getIndex,
-  findNameModelExist,
-  getIndexModel,
-} = require("../utils");
+const modelSchema = require("../model/model");
+const brandSchema = require("../model/brand");
 
-router.get("/", (req, res) => {
-  const data = groupByBrand(fakeData);
+router.get("/", async (req, res) => {
+  const data = await brandSchema.find(
+    {},
+    {
+      _id: false,
+    },
+    { sort: { id: 1 } }
+  );
   if (data.length > 0) {
     return res.json(data);
   }
@@ -22,11 +19,15 @@ router.get("/", (req, res) => {
   });
 });
 
-router.get("/:id/models", (req, res) => {
+router.get("/:id/models", async (req, res) => {
   const id = req.params.id;
-  const brandName = findBrandName(parseInt(id));
-  if (brandName) {
-    const data = filterModelsForBrand(brandName);
+  const brand = await brandSchema.find({
+    id,
+  });
+  if (brand.length > 0) {
+    const data = await modelSchema.find({
+      brand_name: brand[0].brand_name,
+    });
     return res.json(data);
   } else {
     return res.status(500).json({
@@ -35,20 +36,30 @@ router.get("/:id/models", (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const body = req.body;
   if (body.name) {
-    const brandExists = findBrandExist(body.name);
-    if (!brandExists) {
-      const newID = getIndex();
+    const brandExists = await brandSchema.find({
+      brand_name: body.name,
+    });
+    if (brandExists.length === 0) {
+      const idLastItem = await brandSchema.find().sort({ id: -1 }).limit(1);
       const newModel = {
-        id: newID,
+        id: idLastItem[0].id + 1,
         brand_name: body.name,
       };
-      fakeData.push(newModel);
-      return res.json({
-        response: "The brand has been added",
-      });
+      const brandSave = brandSchema(newModel);
+      try {
+        await brandSave.save();
+        return res.json({
+          response: "The brand has been added",
+        });
+      } catch (err) {
+        console.log("error save new Brand", err);
+        return res.status(500).json({
+          response: "error save new Brand",
+        });
+      }
     }
     return res.status(500).json({
       response: "This brand already exists",
@@ -56,10 +67,12 @@ router.post("/", (req, res) => {
   }
 });
 
-router.post("/:id/models", (req, res) => {
+router.post("/:id/models", async (req, res) => {
   const id = req.params.id;
-  const brandName = findBrandName(parseInt(id));
-  if (brandName) {
+  const brand = await brandSchema.find({
+    id,
+  });
+  if (brand.length > 0) {
     const body = req.body;
     if (body.average_price && body.average_price < 100000) {
       return res.status(500).json({
@@ -67,21 +80,30 @@ router.post("/:id/models", (req, res) => {
       });
     }
     if (body.name) {
-      const nameExist = findNameModelExist(body.name, brandName);
-      if (!nameExist) {
+      const nameExist = modelSchema.find({
+        name: body.name,
+        brand_name: brand[0].brand_name,
+      });
+      if (nameExist.length === 0) {
         const average = body.average_price ? body.average_price : 0;
         const name = body.name;
-        const idModel = getIndexModel();
+        const idLastItem = await modelSchema.find().sort({ id: -1 }).limit(1);
+        const idModel = idLastItem[0].id + 1;
         const newModel = {
           id: idModel,
           name: name,
           average_price: average,
           brand_name: brandName,
         };
-        fakeDataBrand.push(newModel);
-        return res.json({
-          response: "The model has been added",
-        });
+        const modelSave = modelSchema(newModel);
+        try {
+          await modelSave.save();
+          return res.json({
+            response: "The model has been added",
+          });
+        } catch (err) {
+          console.log("error save new model", err);
+        }
       }
       return res.status(500).json({
         response: "The name already exists",

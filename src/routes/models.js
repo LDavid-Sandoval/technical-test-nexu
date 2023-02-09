@@ -1,12 +1,18 @@
 const { Router } = require("express");
 const router = Router();
-const fakeData = require("../data/models.json");
-const { filterByPriceRange } = require("../utils");
+const modelSchema = require("../model/model");
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   const greater = req.query.greater ? parseInt(req.query.greater) : 0;
   const lower = req.query.lower ? parseInt(req.query.lower) : 10000000000;
-  const data = filterByPriceRange(fakeData, greater, lower);
+  const data = await modelSchema.find(
+    {
+      average_price: { $gt: greater, $lt: lower },
+    },
+    {
+      _id: false,
+    }
+  );
   if (data.length > 0) {
     return res.json(data);
   }
@@ -15,19 +21,32 @@ router.get("/", (req, res) => {
   });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
   const id = req.params.id;
   const body = req.body;
-  const index = fakeData.findIndex((data) => data.id == id);
-  if (index >= 1) {
-    fakeData[index].average_price = body.average_price;
-    return res.status(200).json({
-      response: "The item has been update",
+  try {
+    const result = await modelSchema.findOneAndUpdate(
+      {
+        id,
+      },
+      {
+        average_price: body.average_price,
+      }
+    );
+    if (result) {
+      return res.status(200).json({
+        response: "The item has been update",
+      });
+    }
+    return res.status(500).json({
+      response: "Model ID not exist",
+    });
+  } catch (err) {
+    console.log("error update", err);
+    return res.status(500).json({
+      response: "error in update model",
     });
   }
-  return res.status(400).json({
-    response: "Not found ID",
-  });
 });
 
 module.exports = router;
