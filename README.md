@@ -20,6 +20,15 @@ Abrir la carpeta de archivos dentro de Visual Studio Code, para poder instalar d
 
 ## Ejecución
 
+Se tiene que agregar in archivo .env con los siguientes valores
+
+```bash
+  MONGODB_USER=''
+  MONGODB_PASSWORD=''
+  MONGODB_CLUSTER=''
+  MONGODB_URI=''
+```
+
 Para ejecutar el proyecto ejecuté lo siguiente
 
 ```bash
